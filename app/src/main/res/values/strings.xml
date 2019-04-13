@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Insta Posts</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_name">Name</string>
+    <string name="promt_nickname">Nickname</string>
+    <string name="register">Register</string>
+    <string name="name">Name</string>
+    <string name="email_registration">Email Registration</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="sign_out">Sign out</string>
+    <string name="profile">Profile</string>
+    <string name="add_new_post">Add New</string>
+    <string name="search">Search</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Image Gallery</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="next">Next</string>
+
+    <string-array name="upload_options">
+        <item>Camera</item>
+        <item>Gallery</item>
+    </string-array>
+</resources>

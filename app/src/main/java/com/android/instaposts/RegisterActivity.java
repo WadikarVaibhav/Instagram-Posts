@@ -46,19 +46,19 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         registerUserProgress.setVisibility(View.VISIBLE);
         if (!registrationEmail.getText().toString().isEmpty() && !registrationPassword.getText().toString().isEmpty() && !name.getText().toString().isEmpty() && !nickname.getText().toString().isEmpty()) {
             makeFieldsNonEditable();
-            User newUser = new User(name.getText().toString(), nickname.getText().toString(), registrationEmail.getText().toString(), registrationPassword.getText().toString());
-            registerNewUser(newUser);
+            registerNewUser();
         } else {
             registerUserProgress.setVisibility(View.GONE);
             Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void registerNewUser(final User newUser) {
+    private void registerNewUser() {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(registrationEmail.getText().toString(), registrationPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(Task<AuthResult> task) {
             if (task.isSuccessful()) {
+                final User newUser = new User(name.getText().toString(), nickname.getText().toString(), registrationEmail.getText().toString(), registrationPassword.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
                 FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(Task<Void> task) {

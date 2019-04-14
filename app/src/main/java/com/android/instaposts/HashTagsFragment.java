@@ -1,7 +1,6 @@
 package com.android.instaposts;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,16 +18,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileFragment extends Fragment {
+public class HashTagsFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private List<ImageMetadata> images;
-    private ImageAdapter imageAdapter;
+    private RecyclerView hashtagRecyclerView;
+    private List<String> hashtags;
+    private HashtagAdapter hashtagAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.profile_fragment, container, false);
-        recyclerView = view.findViewById(R.id.recycler_view);
+        View view = inflater.inflate(R.layout.hashtags_list, container, false);
+        hashtagRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_hashtags);
         return view;
     }
 
@@ -37,15 +35,15 @@ public class ProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initWidgets();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("pictures").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("hashtags");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    ImageMetadata imageMetadata = snapshot.getValue(ImageMetadata.class);
-                    images.add(imageMetadata);
+                    String hashtag = snapshot.getValue().toString();
+                    hashtags.add(hashtag);
                 }
-                imageAdapter.notifyDataSetChanged();
+                hashtagAdapter.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -55,11 +53,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initWidgets() {
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        images = new ArrayList<>();
-        imageAdapter = new ImageAdapter(getActivity(), images);
-        recyclerView.setAdapter(imageAdapter);
+        hashtagRecyclerView.setHasFixedSize(true);
+        hashtagRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        hashtags = new ArrayList<>();
+        hashtagAdapter = new HashtagAdapter(getActivity(), hashtags);
+        hashtagRecyclerView.setAdapter(hashtagAdapter);
     }
 
 }

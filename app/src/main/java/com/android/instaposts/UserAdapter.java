@@ -1,11 +1,15 @@
 package com.android.instaposts;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -29,8 +33,26 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @Override
     public void onBindViewHolder(UserViewHolder userViewHolder, int i) {
-        User user = users.get(i);
+        final User user = users.get(i);
         userViewHolder.username.setText(user.getName());
+        userViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSelectedUserPosts(user.getId());
+            }
+        });
+    }
+
+    private void showSelectedUserPosts(String userId) {
+        Bundle clickedUserDetails = new Bundle();
+        clickedUserDetails.putString("userId", userId);
+        SelectedUserPosts selectedUserPosts = new SelectedUserPosts();
+        selectedUserPosts.setArguments(clickedUserDetails);
+        FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, selectedUserPosts);
+        transaction.addToBackStack("user_posts");
+        transaction.commit();
     }
 
     @Override

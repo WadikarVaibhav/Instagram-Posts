@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,19 +17,19 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectedUserPosts extends Fragment {
+public class SelectedHashtagPosts extends Fragment {
 
     private RecyclerView recyclerView;
     private List<ImageMetadata> images;
     private ImageAdapter imageAdapter;
-    private String userId;
+    private String hashtag;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         Bundle bundle = getArguments();
-        userId = bundle.getString("userId");
+        hashtag = bundle.getString("hashtag");
         return view;
     }
 
@@ -38,13 +37,17 @@ public class SelectedUserPosts extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initWidgets();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("pictures").child(userId);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("pictures");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    ImageMetadata imageMetadata = snapshot.getValue(ImageMetadata.class);
-                    images.add(imageMetadata);
+                for (DataSnapshot userIdSnapshot: dataSnapshot.getChildren()) {
+                    for (DataSnapshot imageMetadataSnapshot: userIdSnapshot.getChildren()) {
+                        ImageMetadata imageMetadata = imageMetadataSnapshot.getValue(ImageMetadata.class);
+                        if (isHashtagExists(imageMetadata.getHashtags())) {
+                            images.add(imageMetadata);
+                        }
+                    }
                 }
                 imageAdapter.notifyDataSetChanged();
             }
@@ -61,6 +64,15 @@ public class SelectedUserPosts extends Fragment {
         images = new ArrayList<>();
         imageAdapter = new ImageAdapter(getActivity(), images);
         recyclerView.setAdapter(imageAdapter);
+    }
+
+    private boolean isHashtagExists(List<String> hashtags) {
+        for (String tag: hashtags) {
+            if (tag.equals(hashtag)) {
+                return true;
+            }
+        }
+        return  false;
     }
 
 }

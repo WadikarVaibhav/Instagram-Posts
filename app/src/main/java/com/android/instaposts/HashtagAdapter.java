@@ -1,6 +1,10 @@
 package com.android.instaposts;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +31,26 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagV
 
     @Override
     public void onBindViewHolder(HashtagAdapter.HashtagViewHolder hashtagViewHolder, int i) {
-        hashtagViewHolder.hashtag.setText(hashtags.get(i));
+        final String hashtag = hashtags.get(i);
+        hashtagViewHolder.hashtag.setText(hashtag);
+        hashtagViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSelectedUserPosts(hashtag);
+            }
+        });
+    }
+
+    private void showSelectedUserPosts(String hashtag) {
+        Bundle clickedUserDetails = new Bundle();
+        clickedUserDetails.putString("hashtag", hashtag);
+        SelectedHashtagPosts selectedHashtagPosts = new SelectedHashtagPosts();
+        selectedHashtagPosts.setArguments(clickedUserDetails);
+        FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, selectedHashtagPosts);
+        transaction.addToBackStack("user_posts");
+        transaction.commit();
     }
 
     @Override

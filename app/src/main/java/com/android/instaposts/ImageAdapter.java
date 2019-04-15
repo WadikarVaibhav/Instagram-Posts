@@ -35,7 +35,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         ImageMetadata imageMetadata = images.get(i);
         imageViewHolder.imageCaption.setText(imageMetadata.getCaption());
         imageViewHolder.imageOwner.setText(imageMetadata.getUser().getName());
-        Picasso.get().load(imageMetadata.getUrl()).fit().centerCrop().into(imageViewHolder.imageItem, new Callback() {
+        Picasso.get().load(imageMetadata.getUrl()).fit().centerInside().into(imageViewHolder.imageItem, new Callback() {
             @Override
             public void onSuccess() {
                 imageViewHolder.imageLoadProgress.setVisibility(View.GONE);

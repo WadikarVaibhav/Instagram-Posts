@@ -43,7 +43,7 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="center_horizontal|center"
             android:background="@color/colorPrimary"
-            android:text="@string/next"
+            android:text="@string/share"
             android:textColor="#ffffff"
             android:textSize="17sp"
             android:textStyle="bold" />

@@ -40,8 +40,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
             android:hint="@string/prompt_email"
-            android:inputType="textEmailAddress"
-            android:text="vaibhav@gmail.com" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/user_password"
@@ -52,8 +51,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:hint="@string/prompt_password"
-            android:inputType="textPassword"
-            android:text="vaibhav" />
+            android:inputType="textPassword" />
 
 
         <EditText
@@ -65,8 +63,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:hint="@string/prompt_name"
-            android:inputType="textPassword"
-            android:text="vaibhav" />
+            android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/nickname"
@@ -77,8 +74,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:hint="@string/promt_nickname"
-            android:inputType="textPassword"
-            android:text="vaibhav" />
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/register_user"

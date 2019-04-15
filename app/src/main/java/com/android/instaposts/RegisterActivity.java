@@ -62,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(Task<Void> task) {
-                        openLoginActivity(newUser);
+                        openLoginActivity();
                     }
                 });
             }
@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void openLoginActivity(User newUser) {
+    private void openLoginActivity() {
         registerUserProgress.setVisibility(View.GONE);
         Intent returnToLogin = new Intent();
         returnToLogin.putExtra("email", registrationEmail.getText().toString());

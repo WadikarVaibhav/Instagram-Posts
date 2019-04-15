@@ -40,8 +40,8 @@
             android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
             android:hint="@string/prompt_email"
-            android:inputType="textEmailAddress"
-            android:text="vaibhav@gmail.com" />
+            android:text="vaibhavwadikar@gmail.com"
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/password"
@@ -52,8 +52,8 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:hint="@string/prompt_password"
-            android:inputType="textPassword"
-            android:text="vaibhav" />
+            android:text="vaibhav"
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btn_login"

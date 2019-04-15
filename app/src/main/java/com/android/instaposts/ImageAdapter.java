@@ -34,6 +34,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(final ImageViewHolder imageViewHolder, int i) {
         ImageMetadata imageMetadata = images.get(i);
         imageViewHolder.imageCaption.setText(imageMetadata.getCaption());
+        imageViewHolder.imageOwner.setText(imageMetadata.getUser().getName());
         Picasso.get().load(imageMetadata.getUrl()).fit().centerCrop().into(imageViewHolder.imageItem, new Callback() {
             @Override
             public void onSuccess() {
@@ -57,12 +58,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         public TextView imageCaption;
         public ImageView imageItem;
         public ProgressBar imageLoadProgress;
+        public TextView imageOwner;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
             imageCaption = itemView.findViewById(R.id.image_caption);
             imageItem = itemView.findViewById(R.id.image_item);
             imageLoadProgress = itemView.findViewById(R.id.load_image_progress);
+            imageOwner = itemView.findViewById(R.id.image_owner);
         }
     }
 

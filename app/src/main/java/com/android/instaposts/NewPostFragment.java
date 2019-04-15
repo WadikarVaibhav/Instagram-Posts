@@ -166,13 +166,27 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void saveImageMetadata(UploadTask.TaskSnapshot taskSnapshot, String filename) {
+    private void saveImageMetadata(UploadTask.TaskSnapshot taskSnapshot, final String filename) {
         Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
         while(!uri.isComplete());
-        Uri url = uri.getResult();
-        ImageMetadata imageMetadata = new ImageMetadata(captionText.getText().toString(), url.toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-        databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(filename).setValue(imageMetadata);
-        createHashtag(imageMetadata);
+        final Uri url = uri.getResult();
+        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference("users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = new User(dataSnapshot.child("name").getValue().toString(), dataSnapshot.child("nickname").getValue().toString(),
+                        dataSnapshot.child("email").getValue().toString(), dataSnapshot.child("id").getValue().toString());
+
+                ImageMetadata imageMetadata = new ImageMetadata(captionText.getText().toString(), url.toString(), user);
+                databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(filename).setValue(imageMetadata);
+                createHashtag(imageMetadata);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void createHashtag(final ImageMetadata imageMetadata) {

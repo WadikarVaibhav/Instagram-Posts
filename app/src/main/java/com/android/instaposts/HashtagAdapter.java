@@ -32,7 +32,7 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagV
     @Override
     public void onBindViewHolder(HashtagAdapter.HashtagViewHolder hashtagViewHolder, int i) {
         final String hashtag = hashtags.get(i);
-        hashtagViewHolder.hashtag.setText(hashtag);
+        hashtagViewHolder.hashtag.setText("#"+hashtag);
         hashtagViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

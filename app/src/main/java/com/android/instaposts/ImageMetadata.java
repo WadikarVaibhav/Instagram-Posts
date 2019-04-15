@@ -11,23 +11,23 @@ public class ImageMetadata {
 
     final String caption;
     final String url;
-    final String userId;
+    final User user;
     final String uploadTime;
     final List<String> hashtags;
 
     public ImageMetadata() {
         this.caption = "";
         this.url = "";
-        this.userId = "";
         this.uploadTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'").format(new Date());
         this.hashtags = new ArrayList<>();
+        this.user = null;
     }
 
-    public ImageMetadata(String caption, String url, String userId) {
+    public ImageMetadata(String caption, String url, User user) {
         this.caption = caption;
         this.url = url;
-        this.userId = userId;
         this.uploadTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'").format(new Date());
+        this.user = user;
         this.hashtags = getHashtags(this.caption);
     }
 
@@ -37,10 +37,6 @@ public class ImageMetadata {
 
     public String getUrl() {
         return url;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public String getUploadTime() {
@@ -55,6 +51,10 @@ public class ImageMetadata {
             hashtags.add(mat.group(1));
         }
         return hashtags;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public List<String> getHashtags() {

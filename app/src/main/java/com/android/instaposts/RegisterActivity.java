@@ -58,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onComplete(Task<AuthResult> task) {
             if (task.isSuccessful()) {
-                final User newUser = new User(name.getText().toString(), nickname.getText().toString(), registrationEmail.getText().toString(), registrationPassword.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                final User newUser = new User(name.getText().toString(), nickname.getText().toString(), registrationEmail.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
                 FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(Task<Void> task) {
@@ -73,8 +73,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void openLoginActivity(User newUser) {
         registerUserProgress.setVisibility(View.GONE);
         Intent returnToLogin = new Intent();
-        returnToLogin.putExtra("email", newUser.getEmail());
-        returnToLogin.putExtra("password", newUser.getPassword());
+        returnToLogin.putExtra("email", registrationEmail.getText().toString());
+        returnToLogin.putExtra("password", registrationPassword.getText().toString());
         setResult(Activity.RESULT_OK, returnToLogin);
         finish();
     }

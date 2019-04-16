@@ -58,7 +58,4 @@ public class DashboardActivity extends AppCompatActivity implements FragmentComm
         transaction.commit();
     }
 
-    @Override
-    public void regenerateProfile() {
-    }
 }

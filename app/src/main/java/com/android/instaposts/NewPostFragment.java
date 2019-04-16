@@ -34,14 +34,21 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class NewPostFragment extends Fragment implements View.OnClickListener {
 
+    public static final String HASHTAGS_NODE = "hashtags";
+    public static final String USERS_NODE = "users";
+    public static final String IMAGE_UPLOAD_FAILED_MESSAGE = "Image Upload Failed. Try Again";
+    public static final String IMAGE_UPLOADED_SUCCESS_MESSAGE = "Image Uploaded successfully";
+    public static final String PICTURES_NODE = "pictures";
+    public static final String FILE_DELIMETER = "/";
+    public static final String SELECT_PICTURE_MEESAGE = "Select Picture";
+    public static final String DATA_KEY = "data";
+    public static final String NAME_KEY = "name";
+    public static final String EMAIL_KEY = "email";
+    public static final String IMAGE = "image/*";
     private AlertDialog alertDialog;
     private ImageView imagePreview;
     private Button uploadImageBtn;
@@ -73,11 +80,9 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
         uploadImageProgress.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private void imageUploadOptions() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Select Picture");
+        builder.setTitle(SELECT_PICTURE_MEESAGE);
         builder.setItems(R.array.upload_options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -99,6 +104,12 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        imageUploadOptions();
+    }
+
     private void clickPictureAndUpload() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, REQUEST_CODE_CAMERA_UPLOAD);
@@ -106,7 +117,7 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
 
     private void selectPictureFromGallery() {
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
+        galleryIntent.setType(IMAGE);
         startActivityForResult(galleryIntent, REQUEST_CODE_GALLERY_UPLOAD);
     }
 
@@ -119,13 +130,18 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        showImageRelatedWidgets();
         if (requestCode == REQUEST_CODE_CAMERA_UPLOAD && resultCode == Activity.RESULT_OK) {
-            selectedImgBitmap = (Bitmap) data.getExtras().get("data");
+            selectedImgBitmap = (Bitmap) data.getExtras().get(DATA_KEY);
         } else if (requestCode == REQUEST_CODE_GALLERY_UPLOAD && resultCode == Activity.RESULT_OK) {
             selectedImgUri = data.getData();
+            if (selectedImgUri != null) {
+                showImageRelatedWidgets();
+                Picasso.get().load(selectedImgUri).fit().centerCrop().into(imagePreview);
+            }
+        } else {
+            alertDialog = null;
+            imageUploadOptions();
         }
-        Picasso.get().load(selectedImgUri).fit().centerCrop().into(imagePreview);
     }
 
     @Override
@@ -143,22 +159,22 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
     private void uploadImage() {
         if (selectedImgUri != null) {
             makeWidgetsNonEditable();
-            storageReference = FirebaseStorage.getInstance().getReference("pictures");
-            databaseReference = FirebaseDatabase.getInstance().getReference("pictures");
+            storageReference = FirebaseStorage.getInstance().getReference(PICTURES_NODE);
+            databaseReference = FirebaseDatabase.getInstance().getReference(PICTURES_NODE);
             final String filename = UUID.randomUUID().toString();
-            StorageReference fileRef = storageReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+filename);
+            StorageReference fileRef = storageReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + FILE_DELIMETER + filename);
             fileRef.putFile(selectedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     uploadImageProgress.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "Image Uploaded successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), IMAGE_UPLOADED_SUCCESS_MESSAGE, Toast.LENGTH_SHORT).show();
                     saveImageMetadata(taskSnapshot, filename);
                     openUserProfile();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getContext(), "Image Upload Failed. Try Again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), IMAGE_UPLOAD_FAILED_MESSAGE, Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -168,20 +184,21 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
 
     private void saveImageMetadata(UploadTask.TaskSnapshot taskSnapshot, final String filename) {
         Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
-        while(!uri.isComplete());
+        while (!uri.isComplete()) ;
         final Uri url = uri.getResult();
-        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference("users")
+        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference(USERS_NODE)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = new User(dataSnapshot.child("name").getValue().toString(), dataSnapshot.child("nickname").getValue().toString(),
-                        dataSnapshot.child("email").getValue().toString(), dataSnapshot.child("id").getValue().toString());
+                User user = new User(dataSnapshot.child(NAME_KEY).getValue().toString(), dataSnapshot.child("nickname").getValue().toString(),
+                        dataSnapshot.child(EMAIL_KEY).getValue().toString(), dataSnapshot.child("id").getValue().toString());
 
                 ImageMetadata imageMetadata = new ImageMetadata(captionText.getText().toString(), url.toString(), user);
                 databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(filename).setValue(imageMetadata);
                 createHashtag(imageMetadata);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -190,13 +207,14 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createHashtag(final ImageMetadata imageMetadata) {
-        for (final String tag: imageMetadata.getHashtags()) {
+        for (final String tag : imageMetadata.getHashtags()) {
             databaseReference = FirebaseDatabase.getInstance().getReference();
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    databaseReference.child("hashtags").child(tag).setValue(tag);
+                    databaseReference.child(HASHTAGS_NODE).child(tag).setValue(tag);
                 }
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 

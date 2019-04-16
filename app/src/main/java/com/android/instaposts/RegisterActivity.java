@@ -15,10 +15,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String DUPLICATE_USER_MESSAGE = "User with this email already exist.";
+    public static final String USERS_KEY = "users";
+    public static final String REQUIRED_FIELDS_MESSAGE = "All fields are required";
+    public static final String EMAIL_KEY = "email";
+    public static final String PASSWORD_KEY = "password";
     private Button register;
     private EditText registrationEmail;
     private EditText registrationPassword;
@@ -49,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             registerNewUser();
         } else {
             registerUserProgress.setVisibility(View.GONE);
-            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, REQUIRED_FIELDS_MESSAGE, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -57,24 +63,28 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(registrationEmail.getText().toString(), registrationPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(Task<AuthResult> task) {
-            if (task.isSuccessful()) {
-                final User newUser = new User(name.getText().toString(), nickname.getText().toString(), registrationEmail.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(Task<Void> task) {
-                        openLoginActivity();
-                    }
-                });
-            }
+                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                    Toast.makeText(getApplicationContext(), DUPLICATE_USER_MESSAGE, Toast.LENGTH_LONG).show();
+                    makeFieldsEditable();
+                } else if (task.isSuccessful()) {
+                    final User newUser = new User(name.getText().toString(), nickname.getText().toString(), registrationEmail.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    FirebaseDatabase.getInstance().getReference().child(USERS_KEY).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(Task<Void> task) {
+                            openLoginActivity();
+                        }
+                    });
+                }
             }
         });
     }
 
+
     private void openLoginActivity() {
         registerUserProgress.setVisibility(View.GONE);
         Intent returnToLogin = new Intent();
-        returnToLogin.putExtra("email", registrationEmail.getText().toString());
-        returnToLogin.putExtra("password", registrationPassword.getText().toString());
+        returnToLogin.putExtra(EMAIL_KEY, registrationEmail.getText().toString());
+        returnToLogin.putExtra(PASSWORD_KEY, registrationPassword.getText().toString());
         setResult(Activity.RESULT_OK, returnToLogin);
         finish();
     }
@@ -86,5 +96,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         name.setEnabled(false);
         register.setEnabled(false);
     }
+
+    private void makeFieldsEditable() {
+        registrationEmail.setEnabled(true);
+        registrationPassword.setEnabled(true);
+        nickname.setEnabled(true);
+        name.setEnabled(true);
+        register.setEnabled(true);
+        registerUserProgress.setVisibility(View.GONE);
+    }
+
 
 }

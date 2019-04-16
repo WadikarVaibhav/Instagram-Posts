@@ -9,16 +9,18 @@ import java.util.regex.Pattern;
 
 public class ImageMetadata {
 
-    final String caption;
-    final String url;
-    final User user;
-    final String uploadTime;
-    final List<String> hashtags;
+    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:sss'Z'";
+    public static final String EXPRESSION = "#(\\S+)";
+    private final String caption;
+    private final String url;
+    private final User user;
+    private final String uploadTime;
+    private final List<String> hashtags;
 
     public ImageMetadata() {
         this.caption = "";
         this.url = "";
-        this.uploadTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'").format(new Date());
+        this.uploadTime = new SimpleDateFormat(DATE_FORMAT).format(new Date());
         this.hashtags = new ArrayList<>();
         this.user = null;
     }
@@ -26,7 +28,7 @@ public class ImageMetadata {
     public ImageMetadata(String caption, String url, User user) {
         this.caption = caption;
         this.url = url;
-        this.uploadTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'").format(new Date());
+        this.uploadTime = new SimpleDateFormat(DATE_FORMAT).format(new Date());
         this.user = user;
         this.hashtags = getHashtags(this.caption);
     }
@@ -44,7 +46,7 @@ public class ImageMetadata {
     }
 
     private List<String> getHashtags(String caption) {
-        Pattern pattern = Pattern.compile("#(\\S+)");
+        Pattern pattern = Pattern.compile(EXPRESSION);
         Matcher mat = pattern.matcher(caption);
         List<String> hashtags = new ArrayList<>();
         while (mat.find()) {

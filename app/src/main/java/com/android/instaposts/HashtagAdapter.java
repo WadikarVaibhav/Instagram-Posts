@@ -15,6 +15,9 @@ import java.util.List;
 
 public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagViewHolder> {
 
+    public static final String HASHTAG = "#";
+    public static final String BACK_STACK_TAG = "user_posts";
+    public static final String HASHTAG_KEY = "hashtag";
     List<String> hashtags;
     Context context;
 
@@ -32,7 +35,7 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagV
     @Override
     public void onBindViewHolder(HashtagAdapter.HashtagViewHolder hashtagViewHolder, int i) {
         final String hashtag = hashtags.get(i);
-        hashtagViewHolder.hashtag.setText("#"+hashtag);
+        hashtagViewHolder.hashtag.setText(HASHTAG +hashtag);
         hashtagViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,13 +46,13 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagV
 
     private void showSelectedUserPosts(String hashtag) {
         Bundle clickedUserDetails = new Bundle();
-        clickedUserDetails.putString("hashtag", hashtag);
+        clickedUserDetails.putString(HASHTAG_KEY, hashtag);
         SelectedHashtagPosts selectedHashtagPosts = new SelectedHashtagPosts();
         selectedHashtagPosts.setArguments(clickedUserDetails);
         FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, selectedHashtagPosts);
-        transaction.addToBackStack("user_posts");
+        transaction.addToBackStack(BACK_STACK_TAG);
         transaction.commit();
     }
 

@@ -20,6 +20,8 @@ import java.util.List;
 
 public class SelectedUserPosts extends Fragment {
 
+    public static final String USER_ID = "userId";
+    public static final String PICTURES_NODE = "pictures";
     private RecyclerView recyclerView;
     private List<ImageMetadata> images;
     private ImageAdapter imageAdapter;
@@ -30,7 +32,7 @@ public class SelectedUserPosts extends Fragment {
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         Bundle bundle = getArguments();
-        userId = bundle.getString("userId");
+        userId = bundle.getString(USER_ID);
         return view;
     }
 
@@ -38,7 +40,7 @@ public class SelectedUserPosts extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initWidgets();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("pictures").child(userId);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(PICTURES_NODE).child(userId);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

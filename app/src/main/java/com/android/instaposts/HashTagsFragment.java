@@ -20,6 +20,7 @@ import java.util.List;
 
 public class HashTagsFragment extends Fragment {
 
+    public static final String HASHTAGS_NODE = "hashtags";
     private RecyclerView hashtagRecyclerView;
     private List<String> hashtags;
     private HashtagAdapter hashtagAdapter;
@@ -35,7 +36,7 @@ public class HashTagsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initWidgets();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("hashtags");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(HASHTAGS_NODE);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -19,6 +19,8 @@ import java.util.List;
 
 public class SelectedHashtagPosts extends Fragment {
 
+    public static final String HASHTAG_KEY = "hashtag";
+    public static final String PICTURES_NODE = "pictures";
     private RecyclerView recyclerView;
     private List<ImageMetadata> images;
     private ImageAdapter imageAdapter;
@@ -29,7 +31,7 @@ public class SelectedHashtagPosts extends Fragment {
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         Bundle bundle = getArguments();
-        hashtag = bundle.getString("hashtag");
+        hashtag = bundle.getString(HASHTAG_KEY);
         return view;
     }
 
@@ -37,7 +39,9 @@ public class SelectedHashtagPosts extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initWidgets();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("pictures");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(PICTURES_NODE);
+
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

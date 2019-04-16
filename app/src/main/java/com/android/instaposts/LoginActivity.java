@@ -20,6 +20,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String REQUIRED_FIELDS_MESSAGE = "All fields are mandatory";
+    public static final String CREDENTIALS_INCORRECT_MESSAGE = "Email or Password Incorrect";
+    public static final String EMAIL_KEY = "email";
+    public static final String PASSWORD_KEY = "password";
+    public static final String REGISTRATION_SUCCESSFUL_MESSAGE = "Registration Successful. Please Login";
     private Button loginButton;
     private Button registerButton;
     private EditText loginEmail;
@@ -68,14 +73,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 openDashboard();
                             } else {
                                 makeFieldsEditable();
-                                Toast.makeText(getApplicationContext(), "Email or Password Incorrect", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), CREDENTIALS_INCORRECT_MESSAGE, Toast.LENGTH_SHORT).show();
                             }
                             loginUserProgress.setVisibility(View.GONE);
                         }
                     });
         } else {
             loginUserProgress.setVisibility(View.GONE);
-            Toast.makeText(getApplicationContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), REQUIRED_FIELDS_MESSAGE, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -89,9 +94,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            loginEmail.setText(data.getStringExtra("email"));
-            loginPassword.setText(data.getStringExtra("password"));
-            Toast.makeText(this, "Registration Successful. Please Login", Toast.LENGTH_SHORT).show();
+            loginEmail.setText(data.getStringExtra(EMAIL_KEY));
+            loginPassword.setText(data.getStringExtra(PASSWORD_KEY));
+            Toast.makeText(this, REGISTRATION_SUCCESSFUL_MESSAGE, Toast.LENGTH_SHORT).show();
         }
     }
 

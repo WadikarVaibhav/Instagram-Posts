@@ -17,6 +17,8 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
+    public static final String USER_ID = "userId";
+    public static final String BACK_STACK_TAG = "user_posts";
     private Context context;
     private List<User> users;
 
@@ -45,13 +47,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     private void showSelectedUserPosts(String userId) {
         Bundle clickedUserDetails = new Bundle();
-        clickedUserDetails.putString("userId", userId);
+        clickedUserDetails.putString(USER_ID, userId);
         SelectedUserPosts selectedUserPosts = new SelectedUserPosts();
         selectedUserPosts.setArguments(clickedUserDetails);
         FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, selectedUserPosts);
-        transaction.addToBackStack("user_posts");
+        transaction.addToBackStack(BACK_STACK_TAG);
         transaction.commit();
     }
 

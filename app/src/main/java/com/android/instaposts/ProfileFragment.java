@@ -24,6 +24,7 @@ import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
+    public static final String PICTURES_NODE = "pictures";
     private RecyclerView recyclerView;
     private List<ImageMetadata> images;
     private ImageAdapter imageAdapter;
@@ -39,7 +40,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Query query = FirebaseDatabase.getInstance().getReference("pictures").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("uploadTime");
+        Query query = FirebaseDatabase.getInstance().getReference(PICTURES_NODE).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("uploadTime");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -51,6 +52,7 @@ public class ProfileFragment extends Fragment {
                 Collections.reverse(images);
                 imageAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 

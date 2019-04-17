@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     public static final String USER_ID = "userId";
-    public static final String BACK_STACK_TAG = "user_posts";
     private Context context;
     private List<User> users;
 
@@ -53,7 +51,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, selectedUserPosts);
-        transaction.addToBackStack(BACK_STACK_TAG);
         transaction.commit();
     }
 

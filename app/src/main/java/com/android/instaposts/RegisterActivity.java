@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
@@ -25,6 +26,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public static final String REQUIRED_FIELDS_MESSAGE = "All fields are required";
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "password";
+    public static final String PASSWORD_LENGTH_MESSAGE = "Password must be at least 6 chars long";
     private Button register;
     private EditText registrationEmail;
     private EditText registrationPassword;
@@ -74,6 +76,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             openLoginActivity();
                         }
                     });
+                }  else if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
+                    Toast.makeText(getApplicationContext(), PASSWORD_LENGTH_MESSAGE, Toast.LENGTH_LONG).show();
+                    makeFieldsEditable();
                 }
             }
         });

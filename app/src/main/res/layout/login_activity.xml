@@ -24,9 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:text="@string/login"
             android:textColor="@color/black"
             android:textSize="25sp" />
@@ -40,7 +38,6 @@
             android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
             android:hint="@string/prompt_email"
-            android:text="vaibhavwadikar@gmail.com"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -52,7 +49,6 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:hint="@string/prompt_password"
-            android:text="vaibhav"
             android:inputType="textPassword" />
 
         <Button

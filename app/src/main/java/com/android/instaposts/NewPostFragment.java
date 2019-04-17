@@ -33,7 +33,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.util.UUID;
 
 public class NewPostFragment extends Fragment implements View.OnClickListener {
@@ -44,22 +43,17 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
     public static final String IMAGE_UPLOADED_SUCCESS_MESSAGE = "Image Uploaded successfully";
     public static final String PICTURES_NODE = "pictures";
     public static final String FILE_DELIMETER = "/";
-    public static final String SELECT_PICTURE_MEESAGE = "Select Picture";
-    public static final String DATA_KEY = "data";
     public static final String NAME_KEY = "name";
     public static final String EMAIL_KEY = "email";
     public static final String IMAGE = "image/*";
-    private AlertDialog alertDialog;
     private ImageView imagePreview;
     private Button uploadImageBtn;
     private Uri selectedImgUri;
-    private Bitmap selectedImgBitmap;
     private EditText captionText;
     private StorageReference storageReference;
     private DatabaseReference databaseReference;
     private ProgressBar uploadImageProgress;
-    private static final int REQUEST_CODE_CAMERA_UPLOAD = 1;
-    private static final int REQUEST_CODE_GALLERY_UPLOAD = 2;
+    private static final int REQUEST_CODE_GALLERY_UPLOAD = 1;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,39 +74,10 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
         uploadImageProgress.setVisibility(View.INVISIBLE);
     }
 
-    private void imageUploadOptions() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(SELECT_PICTURE_MEESAGE);
-        builder.setItems(R.array.upload_options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        clickPictureAndUpload();
-                        break;
-                    case 1:
-                        selectPictureFromGallery();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-        if (alertDialog == null) {
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        imageUploadOptions();
-    }
-
-    private void clickPictureAndUpload() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, REQUEST_CODE_CAMERA_UPLOAD);
+        selectPictureFromGallery();
     }
 
     private void selectPictureFromGallery() {
@@ -130,17 +95,12 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_CAMERA_UPLOAD && resultCode == Activity.RESULT_OK) {
-            selectedImgBitmap = (Bitmap) data.getExtras().get(DATA_KEY);
-        } else if (requestCode == REQUEST_CODE_GALLERY_UPLOAD && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_GALLERY_UPLOAD && resultCode == Activity.RESULT_OK) {
             selectedImgUri = data.getData();
             if (selectedImgUri != null) {
                 showImageRelatedWidgets();
                 Picasso.get().load(selectedImgUri).fit().centerCrop().into(imagePreview);
             }
-        } else {
-            alertDialog = null;
-            imageUploadOptions();
         }
     }
 

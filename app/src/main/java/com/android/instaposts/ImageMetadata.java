@@ -50,7 +50,11 @@ public class ImageMetadata {
         Matcher mat = pattern.matcher(caption);
         List<String> hashtags = new ArrayList<>();
         while (mat.find()) {
-            hashtags.add(mat.group(1));
+            String hashtag = mat.group(1);
+            if (hashtag.indexOf("#") != -1) {
+                hashtag = hashtag.substring(0, hashtag.indexOf("#"));
+            }
+            hashtags.add(hashtag);
         }
         return hashtags;
     }

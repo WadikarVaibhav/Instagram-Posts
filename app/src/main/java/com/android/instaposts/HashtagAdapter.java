@@ -52,7 +52,6 @@ public class HashtagAdapter extends RecyclerView.Adapter<HashtagAdapter.HashtagV
         FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, selectedHashtagPosts);
-        transaction.addToBackStack(BACK_STACK_TAG);
         transaction.commit();
     }
 
